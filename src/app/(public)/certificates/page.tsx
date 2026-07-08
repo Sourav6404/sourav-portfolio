@@ -34,9 +34,16 @@ export default function CertificatesPage() {
             {/* Thumbnail Link */}
             <Link 
               href={`/certificates/${cert.id}`} 
-              className="w-full md:w-36 h-28 bg-slate-900 border border-white/5 rounded-xl overflow-hidden shrink-0 block cursor-pointer"
+              className="w-full md:w-36 h-28 bg-slate-900 border border-white/5 rounded-xl overflow-hidden shrink-0 block cursor-pointer group"
             >
-              <img src={cert.thumbnail} alt={cert.title} className="w-full h-full object-cover grayscale contrast-125 hover:grayscale-0 hover:contrast-100 transition-all duration-300" />
+              {!cert.thumbnail || cert.thumbnail.includes('images.unsplash.com') ? (
+                <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-indigo-500/10 to-purple-500/10 group-hover:from-indigo-500/20 group-hover:to-purple-500/20 transition-all duration-300">
+                  <Award className="w-8 h-8 text-indigo-400 group-hover:text-indigo-300 transition-colors" />
+                  <span className="text-[8px] text-slate-500 font-bold uppercase tracking-wider mt-1">Credential</span>
+                </div>
+              ) : (
+                <img src={cert.thumbnail} alt={cert.title} className="w-full h-full object-cover grayscale contrast-125 hover:grayscale-0 hover:contrast-100 transition-all duration-300" />
+              )}
             </Link>
 
             {/* Info */}
