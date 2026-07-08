@@ -84,7 +84,7 @@ export default function CertificateDetailPage({ params }: CertificateDetailProps
         {/* Certificate Display Screen */}
         <div className="lg:col-span-2 flex flex-col gap-6">
           <div className="relative aspect-[4/3] w-full rounded-2xl overflow-hidden border border-white/5 bg-slate-900 group">
-            {!cert.thumbnail || cert.thumbnail.includes('images.unsplash.com') ? (
+            {!cert.thumbnail ? (
               <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-indigo-500/10 to-purple-500/10">
                 <Award className="w-16 h-16 text-indigo-400" />
                 <span className="text-xs text-slate-500 font-bold uppercase tracking-wider mt-2">Verified Credential</span>
