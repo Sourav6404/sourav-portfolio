@@ -115,17 +115,56 @@ function cleanDriveUrl(url: string | undefined): string {
         resumeUrl: cleanDriveUrl(s.resumeUrl),
       };
 
-      const sanitizedProjects = prj.map(p => ({
-        ...p,
-        coverImage: cleanDriveUrl(p.coverImage),
-        architectureImage: p.architectureImage ? cleanDriveUrl(p.architectureImage) : '',
-        screenshots: p.screenshots ? p.screenshots.map(url => cleanDriveUrl(url)) : [],
-      }));
+      const parseDateString = (dateStr: string | undefined): Date => {
+        if (!dateStr) return new Date(0);
+        const clean = dateStr.includes('-') ? dateStr.split('-')[1].trim() : dateStr.trim();
+        if (clean.toLowerCase() === 'present') return new Date();
+        const parsed = Date.parse(clean);
+        if (!isNaN(parsed)) return new Date(parsed);
+        const yearMatch = clean.match(/\b\d{4}\b/);
+        if (yearMatch) {
+          const year = parseInt(yearMatch[0]);
+          const months = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"];
+          let monthIdx = 0;
+          const lower = clean.toLowerCase();
+          for (let i = 0; i < months.length; i++) {
+            if (lower.includes(months[i])) {
+              monthIdx = i;
+              break;
+            }
+          }
+          return new Date(year, monthIdx, 1);
+        }
+        return new Date(0);
+      };
 
-      const sanitizedCertificates = cert.map(c => ({
-        ...c,
-        thumbnail: cleanDriveUrl(c.thumbnail),
-      }));
+      const sanitizedProjects = prj
+        .map(p => ({
+          ...p,
+          coverImage: cleanDriveUrl(p.coverImage),
+          architectureImage: p.architectureImage ? cleanDriveUrl(p.architectureImage) : '',
+          screenshots: p.screenshots ? p.screenshots.map(url => cleanDriveUrl(url)) : [],
+        }))
+        .sort((a, b) => {
+          const aFeat = !!a.isFeatured;
+          const bFeat = !!b.isFeatured;
+          if (aFeat && !bFeat) return -1;
+          if (!aFeat && bFeat) return 1;
+          const aDate = parseDateString(a.timeline);
+          const bDate = parseDateString(b.timeline);
+          return bDate.getTime() - aDate.getTime();
+        });
+
+      const sanitizedCertificates = cert
+        .map(c => ({
+          ...c,
+          thumbnail: cleanDriveUrl(c.thumbnail),
+        }))
+        .sort((a, b) => {
+          const aDate = parseDateString(a.issueDate);
+          const bDate = parseDateString(b.issueDate);
+          return bDate.getTime() - aDate.getTime();
+        });
 
       const sanitizedExperiences = exp.map(e => ({
         ...e,
