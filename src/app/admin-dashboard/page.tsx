@@ -887,7 +887,7 @@ export default function AdminDashboard() {
                       <span className="text-[9px] text-slate-500 font-semibold uppercase">Or Upload File:</span>
                       <input 
                         type="file" 
-                        accept="image/*"
+                        accept="image/*,application/pdf"
                         onChange={async (e) => {
                           const file = e.target.files?.[0];
                           if (file) {

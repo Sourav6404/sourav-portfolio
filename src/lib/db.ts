@@ -392,6 +392,17 @@ export const db = {
       const { data: publicUrlData } = supabase.storage.from(bucketName).getPublicUrl(path);
       return publicUrlData.publicUrl;
     }
-    return null;
+    
+    // Local fallback: convert to base64 data URL for local storage
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        resolve(reader.result as string);
+      };
+      reader.onerror = () => {
+        resolve(null);
+      };
+      reader.readAsDataURL(file);
+    });
   }
 };

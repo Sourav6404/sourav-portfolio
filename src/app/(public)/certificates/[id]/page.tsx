@@ -16,6 +16,36 @@ export default function CertificateDetailPage({ params }: CertificateDetailProps
 
   const cert = certificates.find(c => c.id === id);
 
+  const isPdfUrl = (url: string | undefined): boolean => {
+    if (!url) return false;
+    return url.toLowerCase().endsWith('.pdf') || url.startsWith('data:application/pdf');
+  };
+
+  const getFrameableUrl = (url: string | undefined): string | null => {
+    if (!url) return null;
+    if (url.includes('drive.google.com')) {
+      let fileId = '';
+      const matchD = url.match(/\/file\/d\/([^/]+)/);
+      if (matchD && matchD[1]) {
+        fileId = matchD[1];
+      } else {
+        const matchId = url.match(/[?&]id=([^&]+)/);
+        if (matchId && matchId[1]) {
+          fileId = matchId[1];
+        }
+      }
+      if (fileId) {
+        return `https://drive.google.com/file/d/${fileId}/preview`;
+      }
+    }
+    if (isPdfUrl(url)) {
+      return url;
+    }
+    return null;
+  };
+
+  const frameableUrl = cert ? (getFrameableUrl(cert.thumbnail) || getFrameableUrl(cert.downloadUrl)) : null;
+
   useEffect(() => {
     if (cert) {
       logAnalyticsEvent('view_certificate', cert.id);
@@ -84,7 +114,14 @@ export default function CertificateDetailPage({ params }: CertificateDetailProps
         {/* Certificate Display Screen */}
         <div className="lg:col-span-2 flex flex-col gap-6">
           <div className="relative aspect-[4/3] w-full rounded-2xl overflow-hidden border border-white/5 bg-slate-900 group">
-            {!cert.thumbnail ? (
+            {frameableUrl ? (
+              <iframe 
+                src={frameableUrl} 
+                className="w-full h-full border-0 bg-slate-950" 
+                allow="autoplay" 
+                title={cert.title}
+              />
+            ) : !cert.thumbnail ? (
               <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-indigo-500/10 to-purple-500/10">
                 <Award className="w-16 h-16 text-indigo-400" />
                 <span className="text-xs text-slate-500 font-bold uppercase tracking-wider mt-2">Verified Credential</span>
@@ -96,7 +133,7 @@ export default function CertificateDetailPage({ params }: CertificateDetailProps
                 className="w-full h-full object-cover grayscale contrast-125 hover:grayscale-0 hover:contrast-100 transition-all duration-700" 
               />
             )}
-            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent"></div>
+            {!frameableUrl && <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent pointer-events-none"></div>}
           </div>
           <p className="text-slate-400 text-xs leading-relaxed text-center italic">
             Visual preview of credential validation. Click verify online to validate official record hashes.
