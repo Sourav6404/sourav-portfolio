@@ -13,14 +13,14 @@ export default function AdminLoginPage() {
 
   React.useEffect(() => {
     if (user) {
-      router.push('/admin/dashboard');
+      router.push('/admin-dashboard');
     }
   }, [user]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (login(password)) {
-      router.push('/admin/dashboard');
+      router.push('/admin-dashboard');
     } else {
       setError('Invalid admin credentials. Use password: admin123');
     }
