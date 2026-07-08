@@ -14,12 +14,12 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Alex Mercer | AI Engineer & Full-Stack Architect",
+  title: "Sourav Kuriakose | Full-Stack Developer & AI Systems Engineer",
   description: "Dynamic personal portfolio showcasing multi-agent AI platforms, scalable full-stack applications, and technical articles.",
   keywords: ["AI Engineer", "Full Stack Developer", "Next.js", "LangGraph", "Supabase", "TypeScript"],
-  authors: [{ name: "Alex Mercer" }],
+  authors: [{ name: "Sourav Kuriakose" }],
   openGraph: {
-    title: "Alex Mercer | AI Engineer & Full-Stack Architect",
+    title: "Sourav Kuriakose | Full-Stack Developer & AI Systems Engineer",
     description: "Dynamic portfolio showcasing multi-agent AI systems and full-stack solutions.",
     type: "website",
   }
