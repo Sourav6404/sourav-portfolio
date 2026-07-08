@@ -61,6 +61,10 @@ export default function LandingPage() {
     return () => clearTimeout(timer);
   }, [charIndex, isDeleting, stringIndex]);
 
+  useEffect(() => {
+    logAnalyticsEvent('visit');
+  }, []);
+
   const handleResumeDownload = () => {
     logAnalyticsEvent('download_resume');
     alert("Resume download triggered (tracked in Admin analytics).");

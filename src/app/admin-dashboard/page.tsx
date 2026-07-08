@@ -18,7 +18,8 @@ export default function AdminDashboard() {
     saveProject, deleteProject, saveCertificate, deleteCertificate,
     saveExperience, deleteExperience, saveBlogPost, deleteBlogPost,
     saveMessage, deleteMessage,
-    skills, education, saveSkill, deleteSkill, saveEducation, deleteEducation
+    skills, education, saveSkill, deleteSkill, saveEducation, deleteEducation,
+    events
   } = useApp();
 
   const [activeTab, setActiveTab] = useState<'analytics' | 'projects' | 'certificates' | 'experience' | 'skills' | 'education' | 'blogs' | 'messages' | 'settings'>('analytics');
@@ -301,37 +302,75 @@ export default function AdminDashboard() {
               <p className="text-slate-500 text-xs mt-0.5">Live dashboard metrics representing visits and operations downloads.</p>
             </div>
 
-            {/* Quick Cards */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-              {[
-                { label: "Total Views", value: "2,492", sub: "+12% this week" },
-                { label: "Resume Downloads", value: "84", sub: "15 today" },
-                { label: "Form Inquiries", value: messages.length, sub: "0 unread" },
-                { label: "Active Articles", value: blogPosts.length, sub: "1 Draft" }
-              ].map((stat, idx) => (
-                <div key={idx} className="glass-card p-5 rounded-xl flex flex-col gap-1">
-                  <span className="text-[10px] text-slate-500 font-bold uppercase">{stat.label}</span>
-                  <span className="text-2xl font-black text-white">{stat.value}</span>
-                  <span className="text-[9px] text-indigo-400 font-semibold">{stat.sub}</span>
-                </div>
-              ))}
-            </div>
+            {/* Calculate live metrics */}
+            {(() => {
+              const totalViews = events.filter(e => e.eventType === 'visit').length;
+              const resumeDownloads = events.filter(e => e.eventType === 'download_resume').length;
+              const unreadInquiries = messages.filter(m => !m.isRead).length;
+              const draftArticles = blogPosts.filter(b => b.isDraft).length;
 
-            {/* Simple Visual Performance Charts */}
-            <div className="glass-card p-6 rounded-2xl flex flex-col gap-4">
-              <h3 className="text-sm font-bold text-white border-b border-white/5 pb-2">Weekly Traffic Trend (Mock)</h3>
-              <div className="h-44 flex items-end gap-3 pt-6 px-4">
-                {[45, 60, 50, 85, 95, 70, 90].map((h, i) => (
-                  <div key={i} className="flex-1 flex flex-col items-center gap-2 h-full justify-end">
-                    <div 
-                      className="w-full rounded-t bg-gradient-to-t from-indigo-600 to-cyan-400 min-h-[4px]"
-                      style={{ height: `${h}%` }}
-                    ></div>
-                    <span className="text-[10px] text-slate-500">Day {i+1}</span>
+              // Calculate daily visit counts for the last 7 days
+              const getTrafficData = () => {
+                const data = [0, 0, 0, 0, 0, 0, 0];
+                const today = new Date();
+                today.setHours(23, 59, 59, 999);
+                
+                events.forEach(event => {
+                  if (event.eventType === 'visit' && event.created_at) {
+                    const eventDate = new Date(event.created_at);
+                    const diffTime = Math.abs(today.getTime() - eventDate.getTime());
+                    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+                    if (diffDays >= 0 && diffDays < 7) {
+                      data[6 - diffDays]++;
+                    }
+                  }
+                });
+                
+                const maxVal = Math.max(...data, 1);
+                return data.map(val => ({
+                  val,
+                  percentage: Math.max(Math.floor((val / maxVal) * 90), 8)
+                }));
+              };
+
+              const trafficTrend = getTrafficData();
+
+              return (
+                <>
+                  {/* Quick Cards */}
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                    {[
+                      { label: "Total Views", value: totalViews, sub: "Live Pageviews" },
+                      { label: "Resume Downloads", value: resumeDownloads, sub: "Live Downloads" },
+                      { label: "Form Inquiries", value: messages.length, sub: `${unreadInquiries} unread` },
+                      { label: "Active Articles", value: blogPosts.length, sub: `${draftArticles} Drafts` }
+                    ].map((stat, idx) => (
+                      <div key={idx} className="glass-card p-5 rounded-xl flex flex-col gap-1">
+                        <span className="text-[10px] text-slate-500 font-bold uppercase">{stat.label}</span>
+                        <span className="text-2xl font-black text-white">{stat.value}</span>
+                        <span className="text-[9px] text-indigo-400 font-semibold">{stat.sub}</span>
+                      </div>
+                    ))}
                   </div>
-                ))}
-              </div>
-            </div>
+
+                  {/* Simple Visual Performance Charts */}
+                  <div className="glass-card p-6 rounded-2xl flex flex-col gap-4">
+                    <h3 className="text-sm font-bold text-white border-b border-white/5 pb-2">Weekly Traffic Trend (Live Views)</h3>
+                    <div className="h-44 flex items-end gap-3 pt-6 px-4">
+                      {trafficTrend.map((t, i) => (
+                        <div key={i} className="flex-1 flex flex-col items-center gap-2 h-full justify-end">
+                          <div 
+                            className="w-full rounded-t bg-gradient-to-t from-indigo-600 to-cyan-400 min-h-[4px]"
+                            style={{ height: `${t.percentage}%` }}
+                          ></div>
+                          <span className="text-[10px] text-slate-500">Day {i+1} ({t.val})</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </>
+              );
+            })()}
           </div>
         )}
 
