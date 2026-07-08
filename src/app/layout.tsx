@@ -3,6 +3,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { AppProvider } from "@/context/AppContext";
 
+import { db } from "../lib/db";
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -13,17 +15,32 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-  title: "Sourav Kuriakose | Full-Stack Developer & AI Systems Engineer",
-  description: "Dynamic personal portfolio showcasing multi-agent AI platforms, scalable full-stack applications, and technical articles.",
-  keywords: ["AI Engineer", "Full Stack Developer", "Next.js", "LangGraph", "Supabase", "TypeScript"],
-  authors: [{ name: "Sourav Kuriakose" }],
-  openGraph: {
-    title: "Sourav Kuriakose | Full-Stack Developer & AI Systems Engineer",
-    description: "Dynamic portfolio showcasing multi-agent AI systems and full-stack solutions.",
-    type: "website",
+export async function generateMetadata(): Promise<Metadata> {
+  try {
+    const settings = await db.getSettings();
+    const name = settings?.profileName || "Sourav Kuriakose";
+    const title = settings?.profileTitle || "Full-Stack Developer & AI Systems Engineer";
+    const bio = settings?.bio || "Dynamic personal portfolio.";
+    
+    return {
+      title: `${name} | ${title}`,
+      description: bio,
+      keywords: ["AI Engineer", "Full Stack Developer", "Next.js", "Supabase", "TypeScript"],
+      authors: [{ name }],
+      openGraph: {
+        title: `${name} | ${title}`,
+        description: bio,
+        type: "website",
+      }
+    };
+  } catch (err) {
+    console.error("Error generating dynamic metadata", err);
+    return {
+      title: "Sourav Kuriakose | Full-Stack Developer & AI Systems Engineer",
+      description: "Dynamic personal portfolio.",
+    };
   }
-};
+}
 
 export default function RootLayout({
   children,
