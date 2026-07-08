@@ -543,7 +543,7 @@ export const INITIAL_PROJECTS: Project[] = [
 
 export const INITIAL_CERTIFICATES: Certificate[] = [
   {
-    id: "c1",
+    id: "python-basic",
     title: "Python (Basic)",
     organization: "HackerRank",
     issueDate: "2026-01",
@@ -555,7 +555,7 @@ export const INITIAL_CERTIFICATES: Certificate[] = [
     created_at: new Date().toISOString()
   },
   {
-    id: "c2",
+    id: "java-basic",
     title: "Java (Basic)",
     organization: "HackerRank",
     issueDate: "2025-10",
@@ -567,7 +567,7 @@ export const INITIAL_CERTIFICATES: Certificate[] = [
     created_at: new Date().toISOString()
   },
   {
-    id: "c3",
+    id: "project-time-management",
     title: "Project time management",
     organization: "Infosys",
     issueDate: "2023-10",
@@ -577,12 +577,36 @@ export const INITIAL_CERTIFICATES: Certificate[] = [
     thumbnail: "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?auto=format&fit=crop&q=80&w=300",
     skillsCovered: ["Agile planning", "Task prioritizing", "Milestone scheduling"],
     created_at: new Date().toISOString()
+  },
+  {
+    id: "backend-development",
+    title: "Back-End Development and APIs",
+    organization: "FreeCodeCamp",
+    issueDate: "2023-11",
+    credentialId: "FCC-BACKEND-2023",
+    verificationUrl: "https://www.freecodecamp.org",
+    downloadUrl: "#",
+    thumbnail: "https://images.unsplash.com/photo-1627398242454-45a1465c2479?auto=format&fit=crop&q=80&w=300",
+    skillsCovered: ["Node.js", "Express.js", "MongoDB", "Mongoose", "REST APIs"],
+    created_at: new Date().toISOString()
+  },
+  {
+    id: "responsive-web-design",
+    title: "Responsive Web Design Developer",
+    organization: "FreeCodeCamp",
+    issueDate: "2023-11",
+    credentialId: "FCC-RWD-2023",
+    verificationUrl: "https://www.freecodecamp.org",
+    downloadUrl: "#",
+    thumbnail: "https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?auto=format&fit=crop&q=80&w=300",
+    skillsCovered: ["HTML5", "CSS3", "Responsive Layouts", "Flexbox & Grid"],
+    created_at: new Date().toISOString()
   }
 ];
 
 export const INITIAL_EXPERIENCES: Experience[] = [
   {
-    id: "e1",
+    id: "quantium",
     company: "Quantium (Forage)",
     position: "Software Engineering Virtual Experience",
     startDate: "2026-07",
@@ -598,7 +622,7 @@ export const INITIAL_EXPERIENCES: Experience[] = [
     companyWebsite: "https://www.theforage.com"
   },
   {
-    id: "e2",
+    id: "commonwealth-bank",
     company: "Commonwealth Bank",
     position: "Software Engineering Intern (Virtual)",
     startDate: "2026-06",
@@ -612,6 +636,22 @@ export const INITIAL_EXPERIENCES: Experience[] = [
     ],
     technologies: ["C#", ".NET", "React", "TypeScript", "MongoDB", "xUnit"],
     companyWebsite: "https://www.commbank.com.au"
+  },
+  {
+    id: "lpu-nextgen-networking",
+    company: "Lovely Professional University",
+    position: "NextGen Networking Summer Intern",
+    startDate: "2025-06",
+    endDate: "2025-07",
+    responsibilities: [
+      "Examined enterprise networking principles by designing scalable virtual network infrastructures and optimizing IP address allocation using subnetting, supernetting, and VLSM techniques.",
+      "Implemented virtual enterprise network environments using Cisco Packet Tracer, TCP/IP, OSI Model, Routing Protocols, Switching, IP Addressing, and Network Troubleshooting to simulate real-world communication systems."
+    ],
+    achievements: [
+      "Validated 15+ virtual networking scenarios by configuring multi-router topologies, achieving 100% successful end-to-end packet transmission while strengthening expertise in routing, switching, and enterprise network optimization."
+    ],
+    technologies: ["Cisco Packet Tracer", "TCP/IP", "VLSM / Subnetting", "Routing Protocols", "Switching", "Network Troubleshooting"],
+    companyWebsite: "https://www.lpu.in"
   }
 ];
 

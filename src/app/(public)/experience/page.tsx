@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
 import { useApp } from '@/context/AppContext';
 import { Briefcase, Milestone, Link2, BookOpen, Award } from 'lucide-react';
 
@@ -22,8 +23,10 @@ export default function ExperiencePage() {
               <div className="absolute -left-[31px] top-1.5 w-4 h-4 rounded-full bg-[#08070e] border-[3px] border-indigo-500 shadow-[0_0_8px_rgba(99,102,241,0.8)] flex items-center justify-center"></div>
               
               <div className="flex flex-col gap-1">
-                <div className="flex justify-between items-start flex-wrap gap-2">
-                  <h2 className="text-lg font-bold text-white leading-tight">{exp.position}</h2>
+                <div className="flex justify-between items-start flex-wrap gap-2 border-b border-white/5 pb-1">
+                  <h2 className="text-lg font-bold text-white leading-tight hover:text-indigo-400 hover:underline transition-colors">
+                    <Link href={`/experience/${exp.id}`}>{exp.position}</Link>
+                  </h2>
                   <span className="text-[10px] px-2 py-0.5 rounded bg-white/5 border border-white/5 text-slate-400 font-semibold uppercase tracking-wider">
                     {exp.startDate} - {exp.endDate}
                   </span>
