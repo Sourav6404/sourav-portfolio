@@ -19,7 +19,7 @@ export default function AdminDashboard() {
     saveExperience, deleteExperience, saveBlogPost, deleteBlogPost,
     saveMessage, deleteMessage,
     skills, education, saveSkill, deleteSkill, saveEducation, deleteEducation,
-    events
+    events, uploadFile
   } = useApp();
 
   const [activeTab, setActiveTab] = useState<'analytics' | 'projects' | 'certificates' | 'experience' | 'skills' | 'education' | 'blogs' | 'messages' | 'settings'>('analytics');
@@ -443,6 +443,22 @@ export default function AdminDashboard() {
                       className="glass-input p-2 text-xs" 
                       placeholder="https://images.unsplash.com/photo-..."
                     />
+                    <div className="flex items-center gap-2 mt-1">
+                      <span className="text-[9px] text-slate-500 font-semibold uppercase">Or Upload File:</span>
+                      <input 
+                        type="file" 
+                        accept="image/*"
+                        onChange={async (e) => {
+                          const file = e.target.files?.[0];
+                          if (file) {
+                            const path = `projects/${Date.now()}_${file.name}`;
+                            const url = await uploadFile('portfolio-media', path, file);
+                            if (url) setProjectForm({ ...projectForm, coverImage: url });
+                          }
+                        }}
+                        className="text-[9px] text-indigo-400 cursor-pointer" 
+                      />
+                    </div>
                   </div>
                   <div className="flex flex-col gap-1">
                     <label className="text-[10px] text-slate-400">Timeline (e.g., Jan 2026 - Present)</label>
@@ -485,6 +501,22 @@ export default function AdminDashboard() {
                       onChange={e => setProjectForm({ ...projectForm, demoVideo: e.target.value })}
                       className="glass-input p-2 text-xs" 
                     />
+                    <div className="flex items-center gap-2 mt-1">
+                      <span className="text-[9px] text-slate-500 font-semibold uppercase">Or Upload:</span>
+                      <input 
+                        type="file" 
+                        accept="video/*"
+                        onChange={async (e) => {
+                          const file = e.target.files?.[0];
+                          if (file) {
+                            const path = `projects/videos/${Date.now()}_${file.name}`;
+                            const url = await uploadFile('portfolio-media', path, file);
+                            if (url) setProjectForm({ ...projectForm, demoVideo: url });
+                          }
+                        }}
+                        className="text-[9px] text-indigo-400 cursor-pointer" 
+                      />
+                    </div>
                   </div>
                   <div className="flex flex-col gap-1">
                     <label className="text-[10px] text-slate-400">Architecture Image URL (optional)</label>
@@ -494,6 +526,22 @@ export default function AdminDashboard() {
                       onChange={e => setProjectForm({ ...projectForm, architectureImage: e.target.value })}
                       className="glass-input p-2 text-xs" 
                     />
+                    <div className="flex items-center gap-2 mt-1">
+                      <span className="text-[9px] text-slate-500 font-semibold uppercase">Or Upload:</span>
+                      <input 
+                        type="file" 
+                        accept="image/*"
+                        onChange={async (e) => {
+                          const file = e.target.files?.[0];
+                          if (file) {
+                            const path = `projects/architecture/${Date.now()}_${file.name}`;
+                            const url = await uploadFile('portfolio-media', path, file);
+                            if (url) setProjectForm({ ...projectForm, architectureImage: url });
+                          }
+                        }}
+                        className="text-[9px] text-indigo-400 cursor-pointer" 
+                      />
+                    </div>
                   </div>
                 </div>
 
@@ -506,6 +554,25 @@ export default function AdminDashboard() {
                     className="glass-input p-2 text-xs" 
                     placeholder="url1, url2, url3"
                   />
+                  <div className="flex items-center gap-2 mt-1">
+                    <span className="text-[9px] text-slate-500 font-semibold uppercase">Or Add Screenshot:</span>
+                    <input 
+                      type="file" 
+                      accept="image/*"
+                      onChange={async (e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          const path = `projects/screenshots/${Date.now()}_${file.name}`;
+                          const url = await uploadFile('portfolio-media', path, file);
+                          if (url) {
+                            const current = Array.isArray(projectForm.screenshots) ? projectForm.screenshots : [];
+                            setProjectForm({ ...projectForm, screenshots: [...current, url] });
+                          }
+                        }
+                      }}
+                      className="text-[9px] text-indigo-400 cursor-pointer" 
+                    />
+                  </div>
                 </div>
 
                 <div className="flex flex-col gap-1">
@@ -816,6 +883,22 @@ export default function AdminDashboard() {
                       onChange={e => setCertForm({ ...certForm, thumbnail: e.target.value })}
                       className="glass-input p-2 text-xs" 
                     />
+                    <div className="flex items-center gap-2 mt-1">
+                      <span className="text-[9px] text-slate-500 font-semibold uppercase">Or Upload File:</span>
+                      <input 
+                        type="file" 
+                        accept="image/*"
+                        onChange={async (e) => {
+                          const file = e.target.files?.[0];
+                          if (file) {
+                            const path = `certificates/${Date.now()}_${file.name}`;
+                            const url = await uploadFile('portfolio-media', path, file);
+                            if (url) setCertForm({ ...certForm, thumbnail: url });
+                          }
+                        }}
+                        className="text-[9px] text-indigo-400 cursor-pointer" 
+                      />
+                    </div>
                   </div>
                   <div className="flex flex-col gap-1">
                     <label className="text-[10px] text-slate-400">Download URL (PDF/Drive)</label>
@@ -958,14 +1041,41 @@ export default function AdminDashboard() {
                   </div>
                 </div>
 
-                <div className="flex flex-col gap-1">
-                  <label className="text-[10px] text-slate-400">Company Website URL</label>
-                  <input 
-                    type="text" 
-                    value={expForm.companyWebsite || ''} 
-                    onChange={e => setExpForm({ ...expForm, companyWebsite: e.target.value })}
-                    className="glass-input p-2 text-xs" 
-                  />
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="flex flex-col gap-1">
+                    <label className="text-[10px] text-slate-400">Company Website URL</label>
+                    <input 
+                      type="text" 
+                      value={expForm.companyWebsite || ''} 
+                      onChange={e => setExpForm({ ...expForm, companyWebsite: e.target.value })}
+                      className="glass-input p-2 text-xs" 
+                    />
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <label className="text-[10px] text-slate-400">Company Logo URL</label>
+                    <input 
+                      type="text" 
+                      value={expForm.logo || ''} 
+                      onChange={e => setExpForm({ ...expForm, logo: e.target.value })}
+                      className="glass-input p-2 text-xs" 
+                    />
+                    <div className="flex items-center gap-2 mt-1">
+                      <span className="text-[9px] text-slate-500 font-semibold uppercase">Or Upload Logo:</span>
+                      <input 
+                        type="file" 
+                        accept="image/*"
+                        onChange={async (e) => {
+                          const file = e.target.files?.[0];
+                          if (file) {
+                            const path = `experiences/logos/${Date.now()}_${file.name}`;
+                            const url = await uploadFile('portfolio-media', path, file);
+                            if (url) setExpForm({ ...expForm, logo: url });
+                          }
+                        }}
+                        className="text-[9px] text-indigo-400 cursor-pointer" 
+                      />
+                    </div>
+                  </div>
                 </div>
 
                 <div className="flex flex-col gap-1">
@@ -1394,6 +1504,32 @@ export default function AdminDashboard() {
                 </div>
 
                 <div className="flex flex-col gap-1">
+                  <label className="text-[10px] text-slate-400">Cover Image URL</label>
+                  <input 
+                    type="text" 
+                    value={blogForm.coverImage || ''} 
+                    onChange={e => setBlogForm({ ...blogForm, coverImage: e.target.value })}
+                    className="glass-input p-2 text-xs" 
+                  />
+                  <div className="flex items-center gap-2 mt-1">
+                    <span className="text-[9px] text-slate-500 font-semibold uppercase">Or Upload Cover:</span>
+                    <input 
+                      type="file" 
+                      accept="image/*"
+                      onChange={async (e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          const path = `blogs/${Date.now()}_${file.name}`;
+                          const url = await uploadFile('portfolio-media', path, file);
+                          if (url) setBlogForm({ ...blogForm, coverImage: url });
+                        }
+                      }}
+                      className="text-[9px] text-indigo-400 cursor-pointer" 
+                    />
+                  </div>
+                </div>
+
+                <div className="flex flex-col gap-1">
                   <label className="text-[10px] text-slate-400">Markdown Content</label>
                   <textarea 
                     rows={8}
@@ -1578,6 +1714,22 @@ export default function AdminDashboard() {
                   onChange={e => setSettingsForm({ ...settingsForm, avatarUrl: e.target.value })}
                   className="glass-input p-3 text-xs"
                 />
+                <div className="flex items-center gap-2 mt-1">
+                  <span className="text-[9px] text-slate-500 font-semibold uppercase">Or Upload Avatar:</span>
+                  <input 
+                    type="file" 
+                    accept="image/*"
+                    onChange={async (e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        const path = `profile/${Date.now()}_${file.name}`;
+                        const url = await uploadFile('portfolio-media', path, file);
+                        if (url) setSettingsForm({ ...settingsForm, avatarUrl: url });
+                      }
+                    }}
+                    className="text-[9px] text-indigo-400 cursor-pointer" 
+                  />
+                </div>
               </div>
 
               <div className="flex flex-col gap-1.5">
@@ -1638,6 +1790,22 @@ export default function AdminDashboard() {
                   onChange={e => setSettingsForm({ ...settingsForm, resumeUrl: e.target.value })}
                   className="glass-input p-3 text-xs"
                 />
+                <div className="flex items-center gap-2 mt-1">
+                  <span className="text-[9px] text-slate-500 font-semibold uppercase">Or Upload PDF:</span>
+                  <input 
+                    type="file" 
+                    accept="application/pdf"
+                    onChange={async (e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        const path = `resumes/${Date.now()}_${file.name}`;
+                        const url = await uploadFile('portfolio-media', path, file);
+                        if (url) setSettingsForm({ ...settingsForm, resumeUrl: url });
+                      }
+                    }}
+                    className="text-[9px] text-indigo-400 cursor-pointer" 
+                  />
+                </div>
               </div>
 
               <div className="flex flex-col gap-1.5">

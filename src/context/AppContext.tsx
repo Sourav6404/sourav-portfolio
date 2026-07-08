@@ -41,6 +41,7 @@ interface AppContextType {
   saveMessage: (m: mock.Message) => Promise<void>;
   deleteMessage: (id: string) => Promise<void>;
   logAnalyticsEvent: (type: string, id?: string) => Promise<void>;
+  uploadFile: (bucket: string, path: string, file: File) => Promise<string | null>;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -278,12 +279,16 @@ function cleanDriveUrl(url: string | undefined): string {
     setEvents(evs);
   };
 
+  const uploadFile = async (bucket: string, path: string, file: File) => {
+    return await db.uploadFile(bucket, path, file);
+  };
+
   return (
     <AppContext.Provider value={{
       settings, projects, certificates, experiences, trainings, achievements, skills, education, blogPosts, messages, events, loading, user,
       login, logout, refreshAll, updateSettings, saveProject, deleteProject, saveCertificate, deleteCertificate, saveExperience, deleteExperience,
       saveTraining, deleteTraining, saveAchievement, deleteAchievement, saveSkill, deleteSkill, saveEducation, deleteEducation, saveBlogPost, deleteBlogPost,
-      saveMessage, deleteMessage, logAnalyticsEvent
+      saveMessage, deleteMessage, logAnalyticsEvent, uploadFile
     }}>
       {children}
     </AppContext.Provider>

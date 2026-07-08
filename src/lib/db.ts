@@ -379,5 +379,19 @@ export const db = {
       { id: "ev2", eventType: "download_resume", created_at: new Date(Date.now() - 7200000).toISOString() },
       { id: "ev3", eventType: "view_project", entityId: "p1", created_at: new Date().toISOString() }
     ]);
+  },
+  async uploadFile(bucketName: string, path: string, file: File): Promise<string | null> {
+    if (supabase) {
+      const { data, error } = await supabase.storage.from(bucketName).upload(path, file, {
+        upsert: true
+      });
+      if (error) {
+        console.error("Supabase storage upload error:", error);
+        return null;
+      }
+      const { data: publicUrlData } = supabase.storage.from(bucketName).getPublicUrl(path);
+      return publicUrlData.publicUrl;
+    }
+    return null;
   }
 };
