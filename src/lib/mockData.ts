@@ -54,6 +54,7 @@ export interface Experience {
   companyWebsite?: string;
   certificateUrl?: string;
   recommendationLetter?: string;
+  logo?: string;
 }
 
 export interface Training {

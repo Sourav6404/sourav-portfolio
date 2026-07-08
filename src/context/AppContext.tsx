@@ -69,6 +69,26 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     refreshAll();
   }, []);
 
+function cleanDriveUrl(url: string | undefined): string {
+  if (!url) return '';
+  if (url.includes('drive.google.com')) {
+    let fileId = '';
+    const matchD = url.match(/\/file\/d\/([^/]+)/);
+    if (matchD && matchD[1]) {
+      fileId = matchD[1];
+    } else {
+      const matchId = url.match(/[?&]id=([^&]+)/);
+      if (matchId && matchId[1]) {
+        fileId = matchId[1];
+      }
+    }
+    if (fileId) {
+      return `https://drive.google.com/uc?export=view&id=${fileId}`;
+    }
+  }
+  return url;
+}
+
   const refreshAll = async () => {
     setLoading(true);
     try {
@@ -87,15 +107,49 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         db.getMessages(),
         db.getEvents()
       ]);
-      setSettings(s);
-      setProjects(prj);
-      setCertificates(cert);
-      setExperiences(exp);
+
+      const sanitizedSettings = {
+        ...s,
+        avatarUrl: cleanDriveUrl(s.avatarUrl),
+        resumeUrl: cleanDriveUrl(s.resumeUrl),
+      };
+
+      const sanitizedProjects = prj.map(p => ({
+        ...p,
+        coverImage: cleanDriveUrl(p.coverImage),
+        architectureImage: p.architectureImage ? cleanDriveUrl(p.architectureImage) : '',
+        screenshots: p.screenshots ? p.screenshots.map(url => cleanDriveUrl(url)) : [],
+      }));
+
+      const sanitizedCertificates = cert.map(c => ({
+        ...c,
+        thumbnail: cleanDriveUrl(c.thumbnail),
+      }));
+
+      const sanitizedExperiences = exp.map(e => ({
+        ...e,
+        logo: e.logo ? cleanDriveUrl(e.logo) : '',
+      }));
+
+      const sanitizedAchievements = ach.map(a => ({
+        ...a,
+        images: a.images ? a.images.map(img => cleanDriveUrl(img)) : [],
+      }));
+
+      const sanitizedBlogs = blg.map(b => ({
+        ...b,
+        coverImage: cleanDriveUrl(b.coverImage),
+      }));
+
+      setSettings(sanitizedSettings);
+      setProjects(sanitizedProjects);
+      setCertificates(sanitizedCertificates);
+      setExperiences(sanitizedExperiences);
       setTrainings(trn);
-      setAchievements(ach);
+      setAchievements(sanitizedAchievements);
       setSkills(sk);
       setEducation(edu);
-      setBlogPosts(blg);
+      setBlogPosts(sanitizedBlogs);
       setMessages(msg);
       setEvents(evs);
     } catch (err) {
