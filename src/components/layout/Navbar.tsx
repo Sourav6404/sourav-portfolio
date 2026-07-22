@@ -26,7 +26,7 @@ export default function Navbar() {
   if (isAdminPage) return null; // Admin has its own sidebar/header
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 glass border-b border-white/5 py-4 px-6 md:px-12 flex justify-between items-center">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-[#08070e]/85 backdrop-blur-lg border-b border-white/5 py-4 px-6 md:px-12 flex justify-between items-center">
       <Link href="/" className="flex items-center gap-2 group">
         <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-indigo-500 to-cyan-400 flex items-center justify-center font-bold text-black text-sm shadow-[0_0_15px_rgba(99,102,241,0.5)]">
           {settings.profileName ? settings.profileName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() : 'AM'}

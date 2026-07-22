@@ -578,6 +578,89 @@ export default function ProjectDetailPage({ params }: ProjectDetailProps) {
     );
   };
 
+  // Render dynamic system flowchart matching the project details
+  const renderFlowchart = (projectSlug: string) => {
+    const isFairSplit = projectSlug === 'fairsplit';
+    const isAltuni = projectSlug === 'altuni-invest';
+    const isChronos = projectSlug === 'chronos-wms-interpolation' || projectSlug === 'chronows';
+    const isKissan = projectSlug === 'kissanmitra-ai-agriculture' || projectSlug === 'kissan-mithra';
+    const isWebXpert = projectSlug === 'webxpert';
+
+    let frontend = "React / Tailwind";
+    let backend = "Node.js / Express";
+    let database = "MongoDB";
+    let worker = "";
+
+    if (isChronos) {
+      frontend = "React / Three.js";
+      backend = "Django REST";
+      database = "PostgreSQL";
+      worker = "Celery / Redis / OpenCV";
+    } else if (isKissan) {
+      frontend = "React.js / Tailwind";
+      backend = "Flask API";
+      database = "MongoDB";
+      worker = "Gemini API / Scikit-Learn";
+    } else if (isAltuni) {
+      frontend = "React / Vite";
+      backend = "Node.js / Express";
+      database = "MongoDB";
+      worker = "Gemini API (Multi-Agents)";
+    } else if (isFairSplit) {
+      frontend = "React / TypeScript";
+      backend = "Node.js / Express";
+      database = "MongoDB";
+      worker = "Debt Settlement Algorithm";
+    } else if (isWebXpert) {
+      frontend = "React / JSZip";
+      backend = "Django REST";
+      database = "PostgreSQL";
+      worker = "Gemini API App Gen";
+    }
+
+    return (
+      <div className="glass-card p-6 rounded-2xl border border-white/5 bg-slate-955/40 flex flex-col gap-4 relative overflow-hidden">
+        <div className="flex items-center justify-between gap-2 text-center text-[10px] font-bold text-white">
+          <div className="flex-grow p-3 rounded-xl border border-white/10 bg-slate-900 shadow-md min-w-[80px]">
+            <span className="text-indigo-400 block">Frontend</span>
+            <span className="text-[9px] text-slate-400 font-normal">{frontend}</span>
+          </div>
+          <div className="text-slate-500 text-sm font-light">➔</div>
+          <div className="flex-grow p-3 rounded-xl border border-white/10 bg-slate-900 shadow-md min-w-[80px]">
+            <span className="text-purple-400 block">Backend API</span>
+            <span className="text-[9px] text-slate-400 font-normal">{backend}</span>
+          </div>
+          <div className="text-slate-500 text-sm font-light">➔</div>
+          <div className="flex-grow p-3 rounded-xl border border-white/10 bg-slate-900 shadow-md min-w-[80px]">
+            <span className="text-emerald-400 block">Database</span>
+            <span className="text-[9px] text-slate-400 font-normal">{database}</span>
+          </div>
+        </div>
+        
+        {worker && (
+          <>
+            <div className="flex justify-center items-center gap-2">
+              <div className="w-px h-6 border-l border-dashed border-white/20"></div>
+            </div>
+            
+            <div className="flex justify-center gap-4 text-center text-[10px] font-bold text-white">
+              <div className="p-3 rounded-xl border border-dashed border-indigo-500/30 bg-indigo-950/10 shadow-sm flex flex-col gap-1 w-2/3">
+                <span className="text-indigo-300">Processing & Services</span>
+                <span className="text-[9px] text-slate-400 font-normal">{worker}</span>
+              </div>
+            </div>
+          </>
+        )}
+
+        {project.architectureImage && (
+          <div className="rounded-xl overflow-hidden border border-white/5 aspect-video mt-4 bg-slate-900">
+            <img src={project.architectureImage} alt="Architecture Map" className="w-full h-full object-cover" />
+          </div>
+        )}
+      </div>
+    );
+  };
+
   // Render custom interactive app mockup screenshots inside browser mockup cards
   const renderGalleryMockup = (projectSlug: string, viewName: string) => {
     const isFairSplit = projectSlug === 'fairsplit';
@@ -852,41 +935,7 @@ export default function ProjectDetailPage({ params }: ProjectDetailProps) {
           </div>
 
           {/* Visual flowchart diagram */}
-          <div className="glass-card p-6 rounded-2xl border border-white/5 bg-slate-955/40 flex flex-col gap-4 relative overflow-hidden">
-            <div className="flex items-center justify-between gap-2 text-center text-[10px] font-bold text-white">
-              <div className="flex-1 p-3 rounded-xl border border-white/10 bg-slate-900 shadow-md">
-                <span className="text-indigo-400 block">Frontend</span>
-                <span className="text-[9px] text-slate-400 font-normal">React / Tailwind</span>
-              </div>
-              <div className="text-slate-500 text-sm font-light">➔</div>
-              <div className="flex-1 p-3 rounded-xl border border-white/10 bg-slate-900 shadow-md">
-                <span className="text-purple-400 block">Backend API</span>
-                <span className="text-[9px] text-slate-400 font-normal">Express / Django</span>
-              </div>
-              <div className="text-slate-500 text-sm font-light">➔</div>
-              <div className="flex-1 p-3 rounded-xl border border-white/10 bg-slate-900 shadow-md">
-                <span className="text-emerald-400 block">Database</span>
-                <span className="text-[9px] text-slate-400 font-normal">Mongo / Postgre</span>
-              </div>
-            </div>
-            
-            <div className="flex justify-center items-center gap-2">
-              <div className="w-px h-6 border-l border-dashed border-white/20"></div>
-            </div>
-            
-            <div className="flex justify-center gap-4 text-center text-[10px] font-bold text-white">
-              <div className="p-3 rounded-xl border border-dashed border-indigo-500/30 bg-indigo-950/10 shadow-sm flex flex-col gap-1 w-1/2">
-                <span className="text-indigo-300">Background Worker</span>
-                <span className="text-[9px] text-slate-400 font-normal">Celery / Redis / CSV Importer</span>
-              </div>
-            </div>
-
-            {project.architectureImage && (
-              <div className="rounded-xl overflow-hidden border border-white/5 aspect-video mt-4 bg-slate-900">
-                <img src={project.architectureImage} alt="Architecture Map" className="w-full h-full object-cover" />
-              </div>
-            )}
-          </div>
+          {renderFlowchart(project.slug)}
 
           <div className="flex flex-col gap-3">
             <h3 className="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-1.5">
@@ -903,12 +952,23 @@ export default function ProjectDetailPage({ params }: ProjectDetailProps) {
           </h2>
 
           <div className="flex flex-col gap-4">
-            {highlightsList.map((high, idx) => (
-              <div key={idx} className="glass-card p-4 rounded-xl flex items-center gap-4 border-l-2 border-indigo-500 shadow-md bg-white/[0.02] hover:bg-white/[0.04] transition-all">
-                <div className="text-2xl font-extrabold text-white leading-none tracking-tight shrink-0">{high.value}</div>
-                <div className="text-xs text-slate-300 font-medium leading-relaxed">{high.label}</div>
-              </div>
-            ))}
+            {highlightsList.map((high, idx) => {
+              const hasLabel = !!high.label;
+              if (!hasLabel) {
+                return (
+                  <div key={idx} className="glass-card p-4 rounded-xl flex items-center gap-3 border-l-2 border-indigo-500 shadow-md bg-white/[0.02] hover:bg-white/[0.04] transition-all">
+                    <CheckCircle className="w-4 h-4 text-cyan-400 shrink-0" />
+                    <div className="text-xs text-slate-200 font-semibold leading-relaxed">{high.value}</div>
+                  </div>
+                );
+              }
+              return (
+                <div key={idx} className="glass-card p-4 rounded-xl flex items-center gap-4 border-l-2 border-indigo-500 shadow-md bg-white/[0.02] hover:bg-white/[0.04] transition-all">
+                  <div className="text-2xl font-extrabold text-cyan-400 leading-none tracking-tight shrink-0">{high.value}</div>
+                  <div className="text-xs text-slate-300 font-medium leading-relaxed">{high.label}</div>
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>
