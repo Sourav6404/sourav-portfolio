@@ -42,6 +42,7 @@ interface AppContextType {
   deleteMessage: (id: string) => Promise<void>;
   logAnalyticsEvent: (type: string, id?: string) => Promise<void>;
   uploadFile: (bucket: string, path: string, file: File) => Promise<string | null>;
+  syncLocalToSupabase: () => Promise<void>;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -322,12 +323,17 @@ function cleanDriveUrl(url: string | undefined): string {
     return await db.uploadFile(bucket, path, file);
   };
 
+  const syncLocalToSupabase = async () => {
+    await db.syncLocalToSupabase();
+    await refreshAll();
+  };
+
   return (
     <AppContext.Provider value={{
       settings, projects, certificates, experiences, trainings, achievements, skills, education, blogPosts, messages, events, loading, user,
       login, logout, refreshAll, updateSettings, saveProject, deleteProject, saveCertificate, deleteCertificate, saveExperience, deleteExperience,
       saveTraining, deleteTraining, saveAchievement, deleteAchievement, saveSkill, deleteSkill, saveEducation, deleteEducation, saveBlogPost, deleteBlogPost,
-      saveMessage, deleteMessage, logAnalyticsEvent, uploadFile
+      saveMessage, deleteMessage, logAnalyticsEvent, uploadFile, syncLocalToSupabase
     }}>
       {children}
     </AppContext.Provider>

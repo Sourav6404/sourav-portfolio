@@ -404,5 +404,60 @@ export const db = {
       };
       reader.readAsDataURL(file);
     });
+  },
+  async syncLocalToSupabase(): Promise<void> {
+    if (!supabase) return;
+    
+    // 1. Settings
+    const localSettings = getLocal<mock.Settings>('settings', mock.INITIAL_SETTINGS);
+    await supabase.from('settings').upsert({ id: 'global', value: localSettings });
+    
+    // 2. Projects
+    const localProjects = getLocal<mock.Project[]>('projects', mock.INITIAL_PROJECTS);
+    for (const p of localProjects) {
+      await supabase.from('projects').upsert(p);
+    }
+    
+    // 3. Certificates
+    const localCerts = getLocal<mock.Certificate[]>('certificates', mock.INITIAL_CERTIFICATES);
+    for (const c of localCerts) {
+      await supabase.from('certificates').upsert(c);
+    }
+    
+    // 4. Experiences
+    const localExps = getLocal<mock.Experience[]>('experiences', mock.INITIAL_EXPERIENCES);
+    for (const e of localExps) {
+      await supabase.from('experiences').upsert(e);
+    }
+    
+    // 5. Trainings
+    const localTrainings = getLocal<mock.Training[]>('trainings', mock.INITIAL_TRAININGS);
+    for (const t of localTrainings) {
+      await supabase.from('trainings').upsert(t);
+    }
+    
+    // 6. Achievements
+    const localAchievements = getLocal<mock.Achievement[]>('achievements', mock.INITIAL_ACHIEVEMENTS);
+    for (const a of localAchievements) {
+      await supabase.from('achievements').upsert(a);
+    }
+    
+    // 7. Skills
+    const localSkills = getLocal<mock.Skill[]>('skills', mock.INITIAL_SKILLS);
+    for (const s of localSkills) {
+      await supabase.from('skills').upsert(s);
+    }
+    
+    // 8. Education
+    const localEdu = getLocal<mock.Education[]>('education', mock.INITIAL_EDUCATION);
+    for (const ed of localEdu) {
+      await supabase.from('education').upsert(ed);
+    }
+    
+    // 9. Blog Posts
+    const localBlogs = getLocal<mock.BlogPost[]>('blog_posts', mock.INITIAL_BLOG_POSTS);
+    for (const b of localBlogs) {
+      await supabase.from('blog_posts').upsert(b);
+    }
   }
 };

@@ -19,7 +19,7 @@ export default function AdminDashboard() {
     saveExperience, deleteExperience, saveBlogPost, deleteBlogPost,
     saveMessage, deleteMessage,
     skills, education, saveSkill, deleteSkill, saveEducation, deleteEducation,
-    events, uploadFile
+    events, uploadFile, syncLocalToSupabase
   } = useApp();
 
   const [activeTab, setActiveTab] = useState<'analytics' | 'projects' | 'certificates' | 'experience' | 'skills' | 'education' | 'blogs' | 'messages' | 'settings'>('analytics');
@@ -351,6 +351,32 @@ export default function AdminDashboard() {
                         <span className="text-[9px] text-indigo-400 font-semibold">{stat.sub}</span>
                       </div>
                     ))}
+                  </div>
+
+                  {/* Database Sync Utility */}
+                  <div className="glass-card p-6 rounded-2xl flex flex-col md:flex-row items-center justify-between gap-6">
+                    <div className="flex flex-col gap-1.5">
+                      <h3 className="text-sm font-bold text-white uppercase tracking-wider">Sync Local Data to Database</h3>
+                      <p className="text-slate-400 text-xs max-w-xl">
+                        Your website is connected to Supabase. If you have customized project details, uploaded certificates, or settings stored locally in this browser's LocalStorage, click below to migrate them to your Supabase tables.
+                      </p>
+                    </div>
+                    <button
+                      onClick={async () => {
+                        if (confirm("This will migrate all your local portfolio changes, certificates, and settings to Supabase. Continue?")) {
+                          try {
+                            await syncLocalToSupabase();
+                            alert("Database synchronized successfully! All your local data is now saved to Supabase.");
+                          } catch (err) {
+                            console.error(err);
+                            alert("Synchronization failed. Check browser console for errors.");
+                          }
+                        }
+                      }}
+                      className="px-5 py-3 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-bold shrink-0 transition-all shadow-lg hover:shadow-indigo-500/20 active:scale-95"
+                    >
+                      Push Local Data to Supabase
+                    </button>
                   </div>
 
                   {/* Simple Visual Performance Charts */}
